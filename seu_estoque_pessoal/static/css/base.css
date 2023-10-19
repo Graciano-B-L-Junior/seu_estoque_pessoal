@@ -1,0 +1,126 @@
+:root{
+    --btn-color:#219afb;
+    --bg:#ffffff;
+    --negative:#ff3e3e;
+}
+*{
+    font-family: 'Roboto', sans-serif;
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+nav{
+    background-color: #219afb;
+    height: 70px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 0px 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    overflow-y: scroll;
+}
+
+nav .btn-menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav div *{
+    color: #ffffff;
+}
+
+nav .display-menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+body{
+    background-color: var(--bg);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+}
+.btn{
+    background-color: var(--btn-color);
+}
+.btn-neg{
+    background-color: var(--negative);
+}
+
+.side-menu{
+    width: 90vw;
+    background-color: var(--btn-color);
+    position: absolute;
+    height: 100vh;
+    left: -90vw;
+    transition: left 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+}
+
+.side-menu-active{
+    width: 90vw;
+    background-color: var(--btn-color);
+    position: absolute;
+    height: 100vh;
+    left: 0vw;
+    transition: left 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+}
+.side-menu ul{
+    padding: 0px 10px;
+}
+.side-menu-active ul{
+    padding: 0px 10px;
+}
+.side-menu ul li{
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    margin: 40px 0px;
+    
+}
+
+.side-menu-active ul li{
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    margin: 40px 0px;
+    
+}
+.side-menu ul li p{
+    color: #ffffff;
+    font-size: 24px;
+}
+
+.side-menu-active ul li p{
+    font-size: 24px;
+    color: #ffffff;
+}
+.side-menu-active ul li span{
+    font-size: 40px;
+}
+
+.side-menu ul li span{
+    font-size: 40px;
+}
+
+
+.side-menu-active ul li a{
+    text-decoration: none;
+    margin-left: 10px;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.side-menu ul li a{
+    text-decoration: none;
+    margin-left: 10px;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+
+.side-menu *{
+    color: var(--bg);
+}

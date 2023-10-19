@@ -1,0 +1,10 @@
+$(document).ready(()=>{
+    $("#open-menu").on("click",()=>{
+        $("#side-menu").removeClass("side-menu")
+        $("#side-menu").addClass("side-menu-active")
+    })
+    $("#close-menu").on("click",()=>{
+        $("#side-menu").removeClass("side-menu-active")
+        $("#side-menu").addClass("side-menu")
+    })
+})
