@@ -1,0 +1,222 @@
+{% extends "seu_estoque_pessoal/base.html" %}
+{% load static %}
+{% block content-head %}
+    <link rel="stylesheet" href="{% static 'css/estoque-geral.css' %}">
+{% endblock %}
+
+{%block nav-display%}
+<div class="display-menu">
+    <span class="material-icons">
+        inventory_2
+    </span>
+    <p>Estoque geral</p>
+</div>
+{%endblock%}
+
+{% block content %}
+<div class="filters">
+    <div id="sort">
+        <span class="material-icons">
+            filter_list
+        </span>
+        <p>Ordenar</p>
+        <span class="material-icons">
+            arrow_drop_down
+        </span>
+    </div>
+    <div id="filter">
+        <span class="material-icons">
+            tune
+        </span>
+        <p>Filtrar</p>
+        <span class="material-icons">
+            arrow_drop_down
+        </span>
+    </div>
+</div>
+<div class="list">
+    <div class="product">
+        <ul class="label">
+            <li>
+                Produto
+            </li>
+            <li>
+                Categoria
+            </li>
+            <li>
+                Fornecedor
+            </li>
+            <li>
+                Quantidade
+            </li>
+            <li>
+                Preço custo
+            </li>
+            <li>
+                Preço Venda
+            </li>
+        </ul>
+        <ul class="info">
+            <li>
+                Natura homem
+            </li>
+            <li>
+                Perfume
+            </li>
+            <li>
+                Natura
+            </li>
+            <li>
+                1
+            </li>
+            <li id="money-display">
+                100
+            </li>
+            <li id="money-display">
+                135
+            </li>
+        </ul>
+        <a class="edit-info" href="">Editar informações</a>
+    </div>
+    <div class="product">
+        <ul class="label">
+            <li>
+                Produto
+            </li>
+            <li>
+                Categoria
+            </li>
+            <li>
+                Fornecedor
+            </li>
+            <li>
+                Quantidade
+            </li>
+            <li>
+                Preço custo
+            </li>
+            <li>
+                Preço Venda
+            </li>
+        </ul>
+        <ul class="info">
+            <li>
+                Natura homem
+            </li>
+            <li>
+                Perfume
+            </li>
+            <li>
+                Natura
+            </li>
+            <li>
+                1
+            </li>
+            <li id="money-display">
+                100
+            </li>
+            <li id="money-display">
+                135
+            </li>
+        </ul>
+        <a class="edit-info" href="">Editar informações</a>
+    </div><div class="product">
+        <ul class="label">
+            <li>
+                Produto
+            </li>
+            <li>
+                Categoria
+            </li>
+            <li>
+                Fornecedor
+            </li>
+            <li>
+                Quantidade
+            </li>
+            <li>
+                Preço custo
+            </li>
+            <li>
+                Preço Venda
+            </li>
+        </ul>
+        <ul class="info">
+            <li>
+                Natura homem
+            </li>
+            <li>
+                Perfume
+            </li>
+            <li>
+                Natura
+            </li>
+            <li>
+                1
+            </li>
+            <li id="money-display">
+                100
+            </li>
+            <li id="money-display">
+                135
+            </li>
+        </ul>
+        <a class="edit-info" href="">Editar informações</a>
+    </div><div class="product">
+        <ul class="label">
+            <li>
+                Produto
+            </li>
+            <li>
+                Categoria
+            </li>
+            <li>
+                Fornecedor
+            </li>
+            <li>
+                Quantidade
+            </li>
+            <li>
+                Preço custo
+            </li>
+            <li>
+                Preço Venda
+            </li>
+        </ul>
+        <ul class="info">
+            <li>
+                Natura homem
+            </li>
+            <li>
+                Perfume
+            </li>
+            <li>
+                Natura
+            </li>
+            <li>
+                1
+            </li>
+            <li id="money-display">
+                100
+            </li>
+            <li id="money-display">
+                135
+            </li>
+        </ul>
+        <a class="edit-info" href="">Editar informações</a>
+    </div>
+</div>
+<div class="pagination-list">
+    <p>mostrando X de Y produtos</p>
+    <a class="previous-page" href="">
+        <span class="material-icons">
+            arrow_back_ios
+        </span>
+    </a>
+    <a class="next-page" href="">
+        <span class="material-icons">
+            arrow_forward_ios
+        </span>
+    </a>
+</div>
+{%endblock%}
