@@ -36,6 +36,9 @@ nav .display-menu{
     justify-content: space-between;
     align-items: center;
 }
+nav .display-menu p{
+    text-align: right;
+}
 
 body{
     background-color: var(--bg);
