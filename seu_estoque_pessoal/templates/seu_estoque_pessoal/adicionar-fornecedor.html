@@ -1,0 +1,31 @@
+{% extends "seu_estoque_pessoal/base.html" %}
+{% load static %}
+{% block content-head %}
+    <link rel="stylesheet" href="{% static 'css/adicionar-fornecedor.css' %}">
+{% endblock %}
+
+{%block nav-display%}
+<div class="display-menu">
+    <span class="material-icons">
+        domain_add
+    </span>
+    <p>Cadastro Fornecedor</p>
+</div>
+{%endblock%}
+
+{% block content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<form id="estoque-form" method="post">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="enviar">
+</form>
+{%endblock%}

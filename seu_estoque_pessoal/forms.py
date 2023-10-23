@@ -19,3 +19,12 @@ class ProductForm(forms.Form):
                                                 initial="Fornecedor existente")
     fornecedor = forms.ChoiceField(label="Fornecedor",required=False)
     new_fornecedor = forms.CharField(label="Novo Fornecedor",required=False)
+
+class SearchProductByCategory(forms.Form):
+    categoria_nome = forms.ChoiceField(label="Selecione a categoria",choices=(("categoria teste","Categoria teste"),))
+
+class SearchProductBySupplier(forms.Form):
+    fornecedor = forms.ChoiceField(label="Selecione o fornecedor",choices=(("fornecedor teste","Fornecedor teste"),))
+
+class AddSupplier(forms.Form):
+    fornecedor = forms.CharField(label="Nome do novo fornecedor",max_length=100)

@@ -45,13 +45,13 @@
                 <span class="material-icons">
                     category
                 </span>
-                <a href="">Estoque por categoria</a>
+                <a href="{% url 'category_inventory' %}">Estoque por categoria</a>
             </li>
             <li>
                 <span class="material-icons">
                     corporate_fare
                 </span>
-                <a href="">Estoque por fornecedor</a>
+                <a href="{% url 'category_supplier' %}">Estoque por fornecedor</a>
             </li>
             <li>
                 <span class="material-icons">
@@ -69,7 +69,7 @@
                 <span class="material-icons">
                     domain_add
                 </span>
-                <a href="">Cadastrar fornecedor</a>
+                <a href="{%url 'add_supplier'%}">Cadastrar fornecedor</a>
             </li>
             
         </ul>
