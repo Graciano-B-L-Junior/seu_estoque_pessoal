@@ -1,5 +1,10 @@
 from django import forms
 
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label="E-mail")
+    senha = forms.CharField(widget=forms.PasswordInput,label="Senha")
+
 class ProductForm(forms.Form):
     nome = forms.CharField(label="Nome produto",max_length=100)
     quantidade = forms.IntegerField(label="Quantidade em estoque")
@@ -28,3 +33,6 @@ class SearchProductBySupplier(forms.Form):
 
 class AddSupplier(forms.Form):
     fornecedor = forms.CharField(label="Nome do novo fornecedor",max_length=100)
+
+class AddCategory(forms.Form):
+    categoria = forms.CharField(label="Nome da nova categoria",max_length=100)

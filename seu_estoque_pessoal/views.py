@@ -1,10 +1,22 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,AddSupplier
+from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,AddSupplier,AddCategory,LoginForm
 from . import models
 from django.contrib import messages
 # Create your views here.
-def index(request):
+
+def Login(request):
+    if request.method == "GET":
+        form = LoginForm()
+        return render(request,'seu_estoque_pessoal/index.html',{
+            "form":form
+        })
+    elif request.method == "POST":
+        form = LoginForm(request.POST)
+        
+
+
+def EstoqueGeral(request):
     return render(request,'seu_estoque_pessoal/estoque-geral.html')
 
 def CadastroProduto(request):
@@ -77,7 +89,7 @@ def EstoqueFornecedor(request):
             "query_search":False
         })
 
-def AdicionarCategoria(request):
+def AdicionarFornecedor(request):
     if request.method == "GET":
         form = AddSupplier()
         return render(request,'seu_estoque_pessoal/adicionar-fornecedor.html',{
@@ -93,5 +105,25 @@ def AdicionarCategoria(request):
         else:
             messages.error(request,"Corrija o formulário")
             return render(request,'seu_estoque_pessoal/adicionar-fornecedor.html',{
+                "form":form
+            })
+
+def AdicionarCategoria(request):
+    if request.method == "GET":
+        form = AddCategory()
+        return render(request,'seu_estoque_pessoal/cadastro-categoria.html',{
+            "form":form
+        })
+    elif request.method == "POST":
+        form = AddCategory(request.POST)
+        if form.is_valid():
+            print("oi")
+            messages.success(request,"Fornecedor adicionado com sucesso")
+            return render(request,'seu_estoque_pessoal/cadastro-categoria.html',{
+                "form":form
+            })
+        else:
+            messages.error(request,"Corrija o formulário")
+            return render(request,'seu_estoque_pessoal/cadastro-categoria.html',{
                 "form":form
             })

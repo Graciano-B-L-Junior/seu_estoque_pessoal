@@ -1,0 +1,40 @@
+*{
+    font-family: 'Roboto', sans-serif;
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box; 
+}
+:root{
+    --btn-color:#219afb;
+    --bg:#ffffff;
+    --negative:#ff3e3e;
+}
+body{
+    padding: 7%;
+}
+form{
+    display: flex;
+    flex-direction: column;
+}
+
+form *:not(input[type=submit]){
+    margin: 4px 0px;
+    padding: 4px;
+}
+
+form input[type=submit]{
+    background-color: var(--btn-color);
+    padding: 7px;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 20px;
+    color: var(--bg);
+    border-radius: 6px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.26);
+    border: 1px solid var(--btn-color);
+}
+
+body > section > ul{
+    padding: 2% 7%;
+    list-style-type: none;
+}

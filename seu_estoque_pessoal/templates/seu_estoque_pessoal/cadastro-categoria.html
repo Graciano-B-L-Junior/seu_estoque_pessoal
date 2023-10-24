@@ -1,0 +1,29 @@
+{% extends "seu_estoque_pessoal/base.html" %}
+{% load static %}
+{% block content-head %}
+    <link rel="stylesheet" href="{% static 'css/cadastro-categoria.css' %}">
+{% endblock %}
+
+{%block nav-display%}
+<div class="display-menu">
+    <span class="material-icons">
+        post_add
+    </span>
+    <p>Nova Categoria</p>
+</div>
+{%endblock%}
+
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<form id="" method="post">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="enviar">
+</form>
+{%endblock%}

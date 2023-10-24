@@ -14,7 +14,7 @@
 {%endblock%}
 
 {% block content %}
-<form id="cadastro-form" action="">
+<form id="cadastro-form" action="" method="post">
     {% csrf_token %}
     {{form}}
     <input type="submit" value="enviar">
