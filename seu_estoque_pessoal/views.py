@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,\
     AddSupplier,AddCategory,LoginForm,\
@@ -15,6 +15,21 @@ def Login(request):
         })
     elif request.method == "POST":
         form = LoginForm(request.POST)
+        if form.is_valid():
+            email= form.cleaned_data["email"]
+            passw = form.cleaned_data["senha"]
+            try:
+                user = models.User.objects.get(email=email,senha=passw)
+                messages.success(request,"Usuario existe parabéns")
+                return render(request,'seu_estoque_pessoal/index.html',{
+                "form":form
+            })
+            except:
+                messages.error(request,"Usuario não existe")
+                return render(request,'seu_estoque_pessoal/index.html',{
+                "form":form
+                })
+        messages.error(request,"Ocorreu um erro com o formulário, tente novamente")
         return render(request,'seu_estoque_pessoal/index.html',{
             "form":form
         })
@@ -33,11 +48,15 @@ def Cadastro(request):
             email = form.cleaned_data["email"]
             passw= form.cleaned_data["senha"]
             new_account = models.User(nome=name,email=email,senha=passw)
-            print(new_account.nome)
-            print("#"*50)
-            return render(request,'seu_estoque_pessoal/cadastro.html',{
+            try:
+                new_account.save()
+            except:
+                messages.error(request, "Já existe uma conta com esse e-mail!")
+                return render(request,'seu_estoque_pessoal/cadastro.html',{
                 "form":form
             })
+            messages.success(request, "Conta criada com sucesso")
+            return redirect(Login)
         else:
             messages.error(request, "Preencha os dados corretamente")
             return render(request,'seu_estoque_pessoal/cadastro.html',{
