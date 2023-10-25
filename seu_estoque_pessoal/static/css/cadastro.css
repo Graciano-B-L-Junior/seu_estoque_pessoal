@@ -34,7 +34,6 @@ form input[type=submit]{
     border: 1px solid var(--btn-color);
 }
 
-
 body > section > ul{
     padding: 2% 7%;
     list-style-type: none;
@@ -42,10 +41,6 @@ body > section > ul{
 .cadastro-esqueceu-senha{
     margin-top: 40px;
     text-align: center;
-}
-p a{
-    text-decoration: none;
-    color: var(--btn-color);
 }
 .cadastro-esqueceu-senha p{
     margin-top: 10px;

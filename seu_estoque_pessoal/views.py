@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,AddSupplier,AddCategory,LoginForm
+from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,\
+    AddSupplier,AddCategory,LoginForm,\
+    RecuperarContaForm,CadastroForm
 from . import models
 from django.contrib import messages
 # Create your views here.
@@ -13,7 +15,35 @@ def Login(request):
         })
     elif request.method == "POST":
         form = LoginForm(request.POST)
+        return render(request,'seu_estoque_pessoal/index.html',{
+            "form":form
+        })
         
+def Cadastro(request):
+    if request.method == "GET":
+        form = CadastroForm()
+        return render(request,'seu_estoque_pessoal/cadastro.html',{
+            "form":form
+        })
+    
+    elif request.method == "POST":
+        form = CadastroForm(request.POST)
+        return render(request,'seu_estoque_pessoal/cadastro.html',{
+            "form":form
+        })
+
+def RecuperarConta(request):
+    if request.method == "GET":
+        form = RecuperarContaForm()
+        return render(request,'seu_estoque_pessoal/recuperar-conta.html',{
+            "form":form
+        })
+    
+    elif request.method == "POST":
+        form = RecuperarContaForm(request.POST)
+        return render(request,'seu_estoque_pessoal/recuperar-conta.html',{
+            "form":form
+        })
 
 
 def EstoqueGeral(request):

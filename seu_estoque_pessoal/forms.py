@@ -5,6 +5,14 @@ class LoginForm(forms.Form):
     email = forms.EmailField(label="E-mail")
     senha = forms.CharField(widget=forms.PasswordInput,label="Senha")
 
+class CadastroForm(forms.Form):
+    nome = forms.CharField(label="Seu nome")
+    email = forms.EmailField(label="E-mail")
+    senha = forms.CharField(widget=forms.PasswordInput,label="Senha")
+
+class RecuperarContaForm(forms.Form):
+    email = forms.CharField(label="Seu e-mail")
+
 class ProductForm(forms.Form):
     nome = forms.CharField(label="Nome produto",max_length=100)
     quantidade = forms.IntegerField(label="Quantidade em estoque")
