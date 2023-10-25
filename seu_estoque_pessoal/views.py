@@ -28,9 +28,22 @@ def Cadastro(request):
     
     elif request.method == "POST":
         form = CadastroForm(request.POST)
-        return render(request,'seu_estoque_pessoal/cadastro.html',{
-            "form":form
-        })
+        if form.is_valid():
+            name = form.cleaned_data["nome"]
+            email = form.cleaned_data["email"]
+            passw= form.cleaned_data["senha"]
+            new_account = models.User(nome=name,email=email,senha=passw)
+            print(new_account.nome)
+            print("#"*50)
+            return render(request,'seu_estoque_pessoal/cadastro.html',{
+                "form":form
+            })
+        else:
+            messages.error(request, "Preencha os dados corretamente")
+            return render(request,'seu_estoque_pessoal/cadastro.html',{
+                "form":form
+            })
+
 
 def RecuperarConta(request):
     if request.method == "GET":
