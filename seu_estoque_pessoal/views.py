@@ -108,19 +108,26 @@ def CadastroProduto(request):
                 preco_custo = form.cleaned_data["preco_custo"]
                 preco_venda = form.cleaned_data["preco_venda"]
                 categoria_radio = form.cleaned_data["radio_button_categoria"]
+                categoria=""
                 match categoria_radio:
                     case "Categoria exsitente":
+                        categoria = form.cleaned_data["new_categoria"]
                         pass
                     case "nova categoria":
-                        pass
+                        categoria = form.cleaned_data["categoria"]
                 fornecedor_radio = form.cleaned_data["radio_button_fornecedor"]
+                fornecedor=""
                 match fornecedor_radio:
-                    case "":
+                    case "Novo fornecedor":
+                        fornecedor= form.cleaned_data["new_fornecedor"]
+                        fornecedor = models.Fornecedor(nome=fornecedor)
                         pass
-                    case "":
+                    case "Fornecedor existente":
+                        fornecedor= form.cleaned_data["fornecedor"]
+                        fornecedor = models.Fornecedor.objects.get(nome=fornecedor)
                         pass
-            print(nome_produto,quantidade,preco_custo,preco_venda,categoria_radio)
-            print("#"*50)
+            # print(nome_produto,quantidade,preco_custo,preco_venda,categoria_radio)
+            # print("#"*50)
             return render(request,'seu_estoque_pessoal/cadastro-produto.html',{
                 "form":form
             })
