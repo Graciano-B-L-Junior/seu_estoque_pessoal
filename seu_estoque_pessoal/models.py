@@ -12,6 +12,9 @@ class Fornecedor(models.Model):
 class Categoria(models.Model):
     nome = models.CharField(max_length=255)
 
+    def __str__(self) -> str:
+        return self.nome
+
 class Produto(models.Model):
     nome = models.CharField(max_length=255)
     quantidade = models.IntegerField(default=0)

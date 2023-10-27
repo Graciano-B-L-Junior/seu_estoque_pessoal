@@ -111,10 +111,12 @@ def CadastroProduto(request):
                 categoria=""
                 match categoria_radio:
                     case "Categoria exsitente":
-                        categoria = form.cleaned_data["new_categoria"]
+                        categoria = form.cleaned_data["categoria"]
+                        categoria = models.Categoria.objects.get(nome=categoria)
                         pass
                     case "nova categoria":
-                        categoria = form.cleaned_data["categoria"]
+                        categoria = form.cleaned_data["new_categoria"]
+                        categoria = models.Categoria(nome=categoria)
                 fornecedor_radio = form.cleaned_data["radio_button_fornecedor"]
                 fornecedor=""
                 match fornecedor_radio:
@@ -126,6 +128,28 @@ def CadastroProduto(request):
                         fornecedor= form.cleaned_data["fornecedor"]
                         fornecedor = models.Fornecedor.objects.get(nome=fornecedor)
                         pass
+                usuario = models.User.objects.get(pk=request.session.get("user_id"))
+                if fornecedor.nome == "" or categoria.nome == "":
+                    messages.error(request,"Campos Categoria e Fornecedor, não podem estar vazios")
+                    return render(request,'seu_estoque_pessoal/cadastro-produto.html',{
+                        "form":form
+                    })
+                fornecedor.save()
+                categoria.save()
+                print(fornecedor)
+                print(categoria)
+                produto = models.Produto(
+                    nome=nome_produto,
+                    quantidade=quantidade,
+                    preco_custo=preco_custo,
+                    preco_venda=preco_venda,
+                    cliente=usuario,
+                    fornecedor=fornecedor,
+                    Categoria=categoria,
+                )
+                produto.save()
+                messages.success(request,"Produto cadastrado com sucesso")
+                return redirect(CadastroProduto)
             # print(nome_produto,quantidade,preco_custo,preco_venda,categoria_radio)
             # print("#"*50)
             return render(request,'seu_estoque_pessoal/cadastro-produto.html',{
