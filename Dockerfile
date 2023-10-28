@@ -14,3 +14,5 @@ RUN apt install -y python3-pip
 RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
+
+RUN python3 manage.py makemigrations && python3 manage.py migrate

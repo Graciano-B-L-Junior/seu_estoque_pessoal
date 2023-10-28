@@ -5,7 +5,6 @@ from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,\
     RecuperarContaForm,CadastroForm
 from . import models
 from django.contrib import messages
-import uuid
 # Create your views here.
 
 def Login(request):
@@ -55,7 +54,10 @@ def Cadastro(request):
             new_account = models.User(nome=name,email=email,senha=passw)
             try:
                 new_account.save()
-            except:
+                models.Categoria(user=new_account,nome="Nenhum").save()
+                models.Fornecedor(user=new_account,nome="Nenhum").save()
+            except Exception as error:
+                print(error)
                 messages.error(request, "Já existe uma conta com esse e-mail!")
                 return render(request,'seu_estoque_pessoal/cadastro.html',{
                 "form":form
@@ -93,10 +95,16 @@ def CadastroProduto(request):
     if request.session.get("user_id")!=None:
         if request.method == "GET":
             form = ProductForm()
-            categorias = models.Categoria.objects.all()
-            fornecedores = models.Fornecedor.objects.all()
-            #form.categoria.choices = ((categoria.nome,categoria.nome) for categoria in categorias)
-            #form.fornecedor.choices =((fornecedor.nome,fornecedor.nome) for fornecedor in fornecedores)
+            form.categoria = models.Categoria.objects.filter(
+                user=models.User.objects.get(pk=request.session.get("user_id"))
+            )
+            form.fornecedor = models.Fornecedor.objects.filter(
+                user=models.User.objects.get(pk=request.session.get("user_id"))
+            )
+            # categorias = models.Categoria.objects.all()
+            # fornecedores = models.Fornecedor.objects.all()
+            # form.categoria.choices = ((categoria.nome,categoria.nome) for categoria in categorias)
+            # form.fornecedor.choices =((fornecedor.nome,fornecedor.nome) for fornecedor in fornecedores)
             return render(request,'seu_estoque_pessoal/cadastro-produto.html',{
                 "form":form
             })
@@ -134,10 +142,10 @@ def CadastroProduto(request):
                     return render(request,'seu_estoque_pessoal/cadastro-produto.html',{
                         "form":form
                     })
+                fornecedor.user=usuario
+                categoria.user=usuario
                 fornecedor.save()
                 categoria.save()
-                print(fornecedor)
-                print(categoria)
                 produto = models.Produto(
                     nome=nome_produto,
                     quantidade=quantidade,
@@ -233,10 +241,11 @@ def AdicionarFornecedor(request):
         elif request.method == "POST":
             form = AddSupplier(request.POST)
             if form.is_valid():
+                user = models.User.objects.get(pk=request.session.get("user_id"))
+                nome = form.cleaned_data["fornecedor"]
+                models.Fornecedor(user=user,nome=nome).save()
                 messages.success(request,"Fornecedor adicionado com sucesso")
-                return render(request,'seu_estoque_pessoal/adicionar-fornecedor.html',{
-                    "form":form
-                })
+                return redirect(AdicionarFornecedor)
             else:
                 messages.error(request,"Corrija o formulário")
                 return render(request,'seu_estoque_pessoal/adicionar-fornecedor.html',{
@@ -255,10 +264,11 @@ def AdicionarCategoria(request):
         elif request.method == "POST":
             form = AddCategory(request.POST)
             if form.is_valid():
+                user = models.User.objects.get(pk=request.session.get("user_id"))
+                nome = form.cleaned_data["categoria"]
+                models.Categoria(user=user,nome=nome).save()
                 messages.success(request,"Fornecedor adicionado com sucesso")
-                return render(request,'seu_estoque_pessoal/cadastro-categoria.html',{
-                    "form":form
-                })
+                return redirect(AdicionarCategoria)
             else:
                 messages.error(request,"Corrija o formulário")
                 return render(request,'seu_estoque_pessoal/cadastro-categoria.html',{

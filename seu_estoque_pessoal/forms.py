@@ -1,4 +1,5 @@
 from django import forms
+from . import models
 
 
 class LoginForm(forms.Form):
@@ -23,15 +24,17 @@ class ProductForm(forms.Form):
                                                choices=(("nova categoria","nova categoria"),
                                                 ("Categoria existente","Categoria existente")),
                                                 initial="Categoria existente")
-    categoria = forms.ChoiceField(label="Categorias",required=False)
+    categoria = forms.ModelChoiceField(label="Categorias",required=False,queryset=models.Categoria.objects.all())
     new_categoria = forms.CharField(label="Nova Categoria",required=False)
     radio_button_fornecedor = forms.ChoiceField(label="",
                                                 widget=forms.RadioSelect,
                                                choices=(("Novo fornecedor","Novo fornecedor"),
                                                 ("Fornecedor existente","Fornecedor existente")),
                                                 initial="Fornecedor existente")
-    fornecedor = forms.ChoiceField(label="Fornecedor",required=False)
+    fornecedor = forms.ModelChoiceField(label="Fornecedor",required=False,queryset=models.Fornecedor.objects.all())
     new_fornecedor = forms.CharField(label="Novo Fornecedor",required=False)
+    
+
 
 class SearchProductByCategory(forms.Form):
     categoria_nome = forms.ChoiceField(label="Selecione a categoria",choices=(("categoria teste","Categoria teste"),))
