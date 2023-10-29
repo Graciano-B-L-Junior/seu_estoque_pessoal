@@ -94,13 +94,13 @@ def EstoqueGeral(request):
 def CadastroProduto(request):
     if request.session.get("user_id")!=None:
         if request.method == "GET":
-            form = ProductForm()
-            form.categoria = models.Categoria.objects.filter(
+            categoria = models.Categoria.objects.filter(
                 user=models.User.objects.get(pk=request.session.get("user_id"))
             )
-            form.fornecedor = models.Fornecedor.objects.filter(
+            fornecedor = models.Fornecedor.objects.filter(
                 user=models.User.objects.get(pk=request.session.get("user_id"))
             )
+            form = ProductForm(fornecedor=fornecedor,categoria=categoria)            
             # categorias = models.Categoria.objects.all()
             # fornecedores = models.Fornecedor.objects.all()
             # form.categoria.choices = ((categoria.nome,categoria.nome) for categoria in categorias)

@@ -33,6 +33,11 @@ class ProductForm(forms.Form):
                                                 initial="Fornecedor existente")
     fornecedor = forms.ModelChoiceField(label="Fornecedor",required=False,queryset=models.Fornecedor.objects.all())
     new_fornecedor = forms.CharField(label="Novo Fornecedor",required=False)
+
+    def __init__(self,fornecedor,categoria,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields["categoria"].queryset = categoria
+        self.fields["fornecedor"].queryset = fornecedor
     
 
 
