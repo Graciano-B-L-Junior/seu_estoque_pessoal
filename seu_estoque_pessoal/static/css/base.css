@@ -127,3 +127,7 @@ body{
 .side-menu *{
     color: var(--bg);
 }
+
+div.alert-message{
+    padding: 7%;
+}

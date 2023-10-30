@@ -87,7 +87,14 @@ def RecuperarConta(request):
 
 def EstoqueGeral(request):
     if request.session.get("user_id")!=None:
-        return render(request,'seu_estoque_pessoal/estoque-geral.html')
+        produtos = models.Produto.objects.filter(
+            user=models.User.objects.get(pk=request.session.get("user_id"))
+        )
+        sem_produtos = True if len(produtos) == 0 else False
+        return render(request,'seu_estoque_pessoal/estoque-geral.html',{
+            "produtos":produtos,
+            "sem_produtos":sem_produtos
+        })
     else:
         return redirect(Login)
 
@@ -119,17 +126,14 @@ def CadastroProduto(request):
                 preco_venda = form.cleaned_data["preco_venda"]
                 categoria_radio = form.cleaned_data["radio_button_categoria"]
                 categoria:models.Categoria
-                print(categoria_radio)
                 match categoria_radio:
                     case "existente":
                         _categoria = form.cleaned_data["categoria"]
-                        print("#"*50)
-                        print(_categoria)
                         categoria = models.Categoria.objects.get(nome=_categoria)
                         pass
                     case "nova_categoria":
                         _categoria = form.cleaned_data["new_categoria"]
-                        categoria = models.Categoria.objects.get_or_create(nome=_categoria)
+                        categoria = models.Categoria(nome=_categoria)
                 fornecedor_radio = form.cleaned_data["radio_button_fornecedor"]
                 fornecedor:models.Fornecedor
                 match fornecedor_radio:
@@ -151,9 +155,9 @@ def CadastroProduto(request):
                     quantidade=quantidade,
                     preco_custo=preco_custo,
                     preco_venda=preco_venda,
-                    cliente=usuario,
+                    user=usuario,
                     fornecedor=fornecedor,
-                    Categoria=categoria,
+                    categoria=categoria,
                 )
                 produto.save()
                 messages.success(request,"Produto cadastrado com sucesso")
@@ -190,7 +194,7 @@ def EstoqueCategoria(request):
                 categoria = form.cleaned_data["categoria_nome"]
                 categoria = models.Categoria.objects.get(nome=categoria,
                                                          user=models.User.objects.get(pk=request.session.get("user_id")))
-                produtos = models.Produto.objects.filter(Categoria=categoria,
+                produtos = models.Produto.objects.filter(categoria=categoria,
                                                          cliente=models.User.objects.get(pk=request.session.get("user_id")))
                 sem_produtos = True if len(produtos) == 0 else False
                 return render(request,'seu_estoque_pessoal/estoque-categoria.html',{

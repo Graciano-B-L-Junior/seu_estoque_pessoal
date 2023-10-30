@@ -25,6 +25,6 @@ class Produto(models.Model):
     quantidade = models.IntegerField(default=0)
     preco_custo = models.FloatField(default=0)
     preco_venda = models.FloatField(default=0)
-    cliente = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True)
     fornecedor = models.ForeignKey(Fornecedor,on_delete=models.CASCADE,blank=True,null=True)
-    Categoria = models.ForeignKey(Categoria,on_delete=models.CASCADE,blank=True,null=True)
+    categoria = models.ForeignKey(Categoria,on_delete=models.CASCADE,blank=True,null=True)
