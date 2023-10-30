@@ -121,3 +121,6 @@ div.pagination-list a{
     border: 1px solid var(--btn-color);
     text-align: center;
 }
+div.alert-message{
+    padding: 7%;
+}

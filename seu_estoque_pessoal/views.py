@@ -101,47 +101,47 @@ def CadastroProduto(request):
                 user=models.User.objects.get(pk=request.session.get("user_id"))
             )
             form = ProductForm(fornecedor=fornecedor,categoria=categoria)            
-            # categorias = models.Categoria.objects.all()
-            # fornecedores = models.Fornecedor.objects.all()
-            # form.categoria.choices = ((categoria.nome,categoria.nome) for categoria in categorias)
-            # form.fornecedor.choices =((fornecedor.nome,fornecedor.nome) for fornecedor in fornecedores)
             return render(request,'seu_estoque_pessoal/cadastro-produto.html',{
                 "form":form
             })
         if request.method == "POST":
-            form = ProductForm(request.POST)
+            categoria = models.Categoria.objects.filter(
+                user=models.User.objects.get(pk=request.session.get("user_id"))
+            )
+            fornecedor = models.Fornecedor.objects.filter(
+                user=models.User.objects.get(pk=request.session.get("user_id"))
+            )
+            form = ProductForm(fornecedor,categoria,request.POST) 
             if form.is_valid():
                 nome_produto = form.cleaned_data["nome"]
                 quantidade = form.cleaned_data["quantidade"]
                 preco_custo = form.cleaned_data["preco_custo"]
                 preco_venda = form.cleaned_data["preco_venda"]
                 categoria_radio = form.cleaned_data["radio_button_categoria"]
-                categoria=""
+                categoria:models.Categoria
+                print(categoria_radio)
                 match categoria_radio:
-                    case "Categoria exsitente":
-                        categoria = form.cleaned_data["categoria"]
-                        categoria = models.Categoria.objects.get(nome=categoria)
+                    case "existente":
+                        _categoria = form.cleaned_data["categoria"]
+                        print("#"*50)
+                        print(_categoria)
+                        categoria = models.Categoria.objects.get(nome=_categoria)
                         pass
-                    case "nova categoria":
-                        categoria = form.cleaned_data["new_categoria"]
-                        categoria = models.Categoria(nome=categoria)
+                    case "nova_categoria":
+                        _categoria = form.cleaned_data["new_categoria"]
+                        categoria = models.Categoria.objects.get_or_create(nome=_categoria)
                 fornecedor_radio = form.cleaned_data["radio_button_fornecedor"]
-                fornecedor=""
+                fornecedor:models.Fornecedor
                 match fornecedor_radio:
                     case "Novo fornecedor":
-                        fornecedor= form.cleaned_data["new_fornecedor"]
-                        fornecedor = models.Fornecedor(nome=fornecedor)
+                        _fornecedor= form.cleaned_data["new_fornecedor"]
+                        fornecedor = models.Fornecedor(nome=_fornecedor)
                         pass
                     case "Fornecedor existente":
-                        fornecedor= form.cleaned_data["fornecedor"]
-                        fornecedor = models.Fornecedor.objects.get(nome=fornecedor)
+                        _fornecedor= form.cleaned_data["fornecedor"]
+                        fornecedor = models.Fornecedor.objects.get(nome=_fornecedor)
                         pass
                 usuario = models.User.objects.get(pk=request.session.get("user_id"))
-                if fornecedor.nome == "" or categoria.nome == "":
-                    messages.error(request,"Campos Categoria e Fornecedor, não podem estar vazios")
-                    return render(request,'seu_estoque_pessoal/cadastro-produto.html',{
-                        "form":form
-                    })
                 fornecedor.user=usuario
                 categoria.user=usuario
                 fornecedor.save()
@@ -170,31 +170,38 @@ def CadastroProduto(request):
 def EstoqueCategoria(request):
     if request.session.get("user_id")!=None:
         if request.method == "GET":
-            form = SearchProductByCategory()
-            #categorias = models.Categoria.objects.all()
-            #fornecedores = models.Fornecedor.objects.all()
-            #form.categoria.choices = ((categoria.nome,categoria.nome) for categoria in categorias)
-            #form.fornecedor.choices =((fornecedor.nome,fornecedor.nome) for fornecedor in fornecedores)
+            categorias = models.Categoria.objects.filter(
+                user=models.User.objects.get(pk=request.session.get("user_id"))
+            )
+            form = SearchProductByCategory(categoria=categorias)
             return render(request,'seu_estoque_pessoal/estoque-categoria.html',{
                 "form":form,
-                "query_search":False
             })
         elif request.method == "POST":
-            form = SearchProductByCategory(request.POST)
+            # categorias = models.Categoria.objects.filter(
+            #     user=models.User.objects.get(pk=request.session.get("user_id"))
+            # )
+            categorias = models.Categoria.objects.filter(
+                user=models.User.objects.get(pk=request.session.get("user_id"))
+            )
+            form = SearchProductByCategory(categorias,request.POST)
             # IMPLEMENTAR SISTEMA DE QUERY DE PRODUTOS
             if form.is_valid():
-                #categoria = form.cleaned_data["categoria_nome"]
-                #categoria = models.Categoria.objects.get(nome=categoria)
-                #produtos = models.Produto.objects.filter(Categoria=categoria)
+                categoria = form.cleaned_data["categoria_nome"]
+                categoria = models.Categoria.objects.get(nome=categoria,
+                                                         user=models.User.objects.get(pk=request.session.get("user_id")))
+                produtos = models.Produto.objects.filter(Categoria=categoria,
+                                                         cliente=models.User.objects.get(pk=request.session.get("user_id")))
+                sem_produtos = True if len(produtos) == 0 else False
                 return render(request,'seu_estoque_pessoal/estoque-categoria.html',{
+                "produtos":produtos,
                 "form":form,
-                "query_search":True
+                "sem_produtos":sem_produtos
             })
             else:
                 messages.error(request, "Erro ao utilizar formulário, tente novamente")
                 return render(request,'seu_estoque_pessoal/estoque-categoria.html',{
                 "form":form,
-                "query_search":False
             })
     else:
         return redirect(Login)
@@ -202,31 +209,39 @@ def EstoqueCategoria(request):
 def EstoqueFornecedor(request):
     if request.session.get("user_id")!=None:
         if request.method == "GET":
-            form = SearchProductBySupplier()
+            fornecedor = models.Fornecedor.objects.filter(
+                user=models.User.objects.get(pk=request.session.get("user_id"))
+            )
+            form = SearchProductBySupplier(fornecedor)
             #categorias = models.Categoria.objects.all()
             #fornecedores = models.Fornecedor.objects.all()
             #form.categoria.choices = ((categoria.nome,categoria.nome) for categoria in categorias)
             #form.fornecedor.choices =((fornecedor.nome,fornecedor.nome) for fornecedor in fornecedores)
-            return render(request,'seu_estoque_pessoal/estoque-categoria.html',{
+            return render(request,'seu_estoque_pessoal/estoque-fornecedor.html',{
                 "form":form,
-                "query_search":False
             })
         elif request.method == "POST":
-            form = SearchProductBySupplier(request.POST)
+            fornecedor = models.Fornecedor.objects.filter(
+                user=models.User.objects.get(pk=request.session.get("user_id"))
+            )
+            form = SearchProductBySupplier(fornecedor,request.POST)
             # IMPLEMENTAR SISTEMA DE QUERY DE PRODUTOS
             if form.is_valid():
-                #categoria = form.cleaned_data["categoria_nome"]
-                #categoria = models.Categoria.objects.get(nome=categoria)
-                #produtos = models.Produto.objects.filter(Categoria=categoria)
-                return render(request,'seu_estoque_pessoal/estoque-categoria.html',{
+                fornecedor = form.cleaned_data["fornecedor"]
+                fornecedor = models.Fornecedor.objects.get(nome=fornecedor,
+                                                         user=models.User.objects.get(pk=request.session.get("user_id")))
+                produtos = models.Produto.objects.filter(fornecedor=fornecedor,
+                                                         cliente=models.User.objects.get(pk=request.session.get("user_id")))
+                sem_produtos = True if len(produtos) == 0 else False
+                return render(request,'seu_estoque_pessoal/estoque-fornecedor.html',{
                 "form":form,
-                "query_search":True
+                "produtos":produtos,
+                "sem_produtos":sem_produtos
             })
             else:
                 messages.error(request, "Erro ao utilizar formulário, tente novamente")
-                return render(request,'seu_estoque_pessoal/estoque-categoria.html',{
+                return render(request,'seu_estoque_pessoal/estoque-fornecedor.html',{
                 "form":form,
-                "query_search":False
             })
     else:
         return redirect(Login)
