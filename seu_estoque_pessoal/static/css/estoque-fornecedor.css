@@ -65,7 +65,7 @@ div#filter{
 }
 div.list{
     width: 100%;
-    height: 60vh;
+    height: 40vh;
     overflow-y: scroll;
 }
 
@@ -123,4 +123,48 @@ div.pagination-list a{
 }
 div.alert-message{
     padding: 7%;
+}
+
+div.total-info{
+    display: grid;
+    grid-template-areas:
+    ". ." 
+    "g-1-1 g-2-1"
+    "g-1-2 g-2-2"
+    "g-1-3 g-2-3";
+    padding: 1% 7%;
+    border-bottom: 5px dotted #cccccc6b;
+}
+div.total-info h3{
+    grid-column: 1/3;
+}
+
+div.total-info *{
+    padding: 15px 0px;
+}
+
+div.total-info p.g-1{
+    /* grid-column: 1/2; */
+    grid-area: g-1;
+}
+p.g-1-1{
+    grid-area: g-1-1;
+}
+p.g-1-2{
+    grid-area: g-1-2;
+}
+p.g-1-3{
+    grid-area: g-1-3;
+}
+p.g-2-1{
+    font-weight: bold;
+    grid-area: g-2-1;
+}
+p.g-2-2{
+    font-weight: bold;
+    grid-area: g-2-2;
+}
+p.g-2-3{
+    font-weight: bold;
+    grid-area: g-2-3;
 }

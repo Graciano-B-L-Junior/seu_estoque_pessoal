@@ -249,10 +249,22 @@ def EstoqueFornecedor(request):
                 produtos = models.Produto.objects.filter(fornecedor=fornecedor,
                                                          user=models.User.objects.get(pk=request.session.get("user_id")))
                 sem_produtos = True if len(produtos) == 0 else False
+                infos_totais = {}
+                if sem_produtos == False:
+                    quantidade = len(produtos)
+                    custo_total =0
+                    lucro_bruto =0
+                    for produto in produtos:
+                        custo_total += produto.quantidade * produto.preco_custo
+                        lucro_bruto += produto.quantidade * produto.preco_venda
+                    infos_totais["quantidade"]=quantidade
+                    infos_totais["custo_total"] = custo_total
+                    infos_totais["lucro_bruto"] = lucro_bruto
                 return render(request,'seu_estoque_pessoal/estoque-fornecedor.html',{
                 "form":form,
                 "produtos":produtos,
-                "sem_produtos":sem_produtos
+                "sem_produtos":sem_produtos,
+                "infos_totais":infos_totais
             })
             else:
                 messages.error(request, "Erro ao utilizar formulário, tente novamente")

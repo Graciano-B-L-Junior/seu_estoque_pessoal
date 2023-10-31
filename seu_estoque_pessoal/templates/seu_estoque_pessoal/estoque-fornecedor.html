@@ -30,6 +30,15 @@
 </form>
 
 {%if produtos%}
+<div class="total-info">
+    <h3>Informações totais do fornecedor: </h3>
+    <p class="g-1-1">Quantidade total de produtos</p>
+    <p class="g-1-2">Total em R$ de custo em estoque</p>
+    <p class="g-1-3">Total em R$ de lucro bruto</p>
+    <p class="g-2-1">{{infos_totais.quantidade}}</p>
+    <p class="g-2-2">R$ {{infos_totais.custo_total}}</p>
+    <p class="g-2-3">R$ {{infos_totais.lucro_bruto}}</p>
+</div>
 <div class="list">
     {%for produto in produtos%}
     <div class="product">
