@@ -368,10 +368,66 @@ def EditarProduto(request,id,produto):
             categoria = models.Categoria.objects.filter(
                 user=user
             )
+            product = models.Produto.objects.get(
+                pk=id,
+                nome=produto
+            )
             form = EditProductForm(fornecedor,categoria,request.POST)
             if form.is_valid():
-                pass
+                nome_produto = form.cleaned_data["nome"]
+                quantidade = form.cleaned_data["quantidade"]
+                preco_custo = form.cleaned_data["preco_custo"]
+                preco_venda = form.cleaned_data["preco_venda"]
+                categoria_radio = form.cleaned_data["radio_button_categoria"]
+                categoria:models.Categoria
+                match categoria_radio:
+                    case "existente":
+                        _categoria = form.cleaned_data["categoria"]
+                        categoria = models.Categoria.objects.get(nome=_categoria)
+                        pass
+                    case "nova_categoria":
+                        _categoria = form.cleaned_data["new_categoria"]
+                        categoria = models.Categoria(nome=_categoria)
+                fornecedor_radio = form.cleaned_data["radio_button_fornecedor"]
+                fornecedor:models.Fornecedor
+                match fornecedor_radio:
+                    case "Novo fornecedor":
+                        _fornecedor= form.cleaned_data["new_fornecedor"]
+                        fornecedor = models.Fornecedor(nome=_fornecedor)
+                        pass
+                    case "Fornecedor existente":
+                        _fornecedor= form.cleaned_data["fornecedor"]
+                        fornecedor = models.Fornecedor.objects.get(nome=_fornecedor)
+                        pass
+                usuario = models.User.objects.get(pk=request.session.get("user_id"))
+                fornecedor.user=usuario
+                categoria.user=usuario
+                fornecedor.save()
+                categoria.save()
+                product.categoria=categoria
+                product.fornecedor=fornecedor
+                product.nome = nome_produto
+                product.preco_custo=preco_custo
+                product.preco_venda=preco_venda
+                product.quantidade=quantidade
+                # produto = models.Produto(
+                #     nome=nome_produto,
+                #     quantidade=quantidade,
+                #     preco_custo=preco_custo,
+                #     preco_venda=preco_venda,
+                #     user=usuario,
+                #     fornecedor=fornecedor,
+                #     categoria=categoria,
+                # )
+                product.save()
+                messages.success(request,"Produto Editado com sucesso")
+                return render(request,'seu_estoque_pessoal/editar-produto.html',{
+                "form":form
+                })
             else:
-                pass
+                messages.error(request,"Erro ao salvar dados do formulário")
+                return render(request,'seu_estoque_pessoal/editar-produto.html',{
+                "form":form
+            })
     else:
         return redirect(Login)
