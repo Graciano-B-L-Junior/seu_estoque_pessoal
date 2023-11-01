@@ -11,5 +11,6 @@ urlpatterns = [
     path('estoque-fornecedor',views.EstoqueFornecedor,name='category_supplier'),
     path('adicionar-fornecedor',views.AdicionarFornecedor,name='add_supplier'),
     path('adicionar-categoria',views.AdicionarCategoria,name='add_category'),
+    path('editar-produto/<int:id>/<str:produto>',views.EditarProduto,name='edit_product'),
     path('logout',views.Logout,name='logout')
 ]

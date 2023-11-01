@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,\
     AddSupplier,AddCategory,LoginForm,\
-    RecuperarContaForm,CadastroForm
+    RecuperarContaForm,CadastroForm,EditProductForm
 from . import models
 from django.contrib import messages
 # Create your views here.
@@ -91,9 +91,21 @@ def EstoqueGeral(request):
             user=models.User.objects.get(pk=request.session.get("user_id"))
         )
         sem_produtos = True if len(produtos) == 0 else False
+        infos_totais = {}
+        if sem_produtos == False:
+            quantidade = len(produtos)
+            custo_total =0
+            lucro_bruto =0
+            for produto in produtos:
+                custo_total += produto.quantidade * produto.preco_custo
+                lucro_bruto += produto.quantidade * produto.preco_venda
+            infos_totais["quantidade"]=quantidade
+            infos_totais["custo_total"] = custo_total
+            infos_totais["lucro_bruto"] = lucro_bruto
         return render(request,'seu_estoque_pessoal/estoque-geral.html',{
             "produtos":produtos,
-            "sem_produtos":sem_produtos
+            "sem_produtos":sem_produtos,
+            "infos_totais":infos_totais
         })
     else:
         return redirect(Login)
@@ -324,3 +336,33 @@ def Logout(request):
     del request.session["login_form_completed"]
     del request.session["user_id"]
     return redirect(Login)
+
+def EditarProduto(request,id,produto):
+    if request.session.get("user_id")!=None:
+        if request.method == "GET":
+            user = models.User.objects.get(pk=request.session.get("user_id"))
+            fornecedor = models.Fornecedor.objects.filter(
+                user=user
+            )
+            categoria = models.Categoria.objects.filter(
+                user=user
+            )
+            form = EditProductForm(fornecedor,categoria)
+            return render(request,'seu_estoque_pessoal/editar-produto.html',{
+                "form":form
+            })
+        elif request.method == "POST":
+            user = models.User.objects.get(pk=request.session.get("user_id"))
+            fornecedor = models.Fornecedor.objects.filter(
+                user=user
+            )
+            categoria = models.Categoria.objects.filter(
+                user=user
+            )
+            form = EditProductForm(fornecedor,categoria,request.POST)
+            if form.is_valid():
+                pass
+            else:
+                pass
+    else:
+        return redirect(Login)

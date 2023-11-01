@@ -38,7 +38,11 @@ class ProductForm(forms.Form):
         super().__init__(*args,**kwargs)
         self.fields["categoria"].queryset = categoria
         self.fields["fornecedor"].queryset = fornecedor
-    
+
+class EditProductForm(ProductForm):
+
+    def __init__(self, fornecedor, categoria, *args, **kwargs):
+        super().__init__(fornecedor, categoria, *args, **kwargs)
 
 
 class SearchProductByCategory(forms.Form):
