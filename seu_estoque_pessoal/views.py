@@ -347,7 +347,16 @@ def EditarProduto(request,id,produto):
             categoria = models.Categoria.objects.filter(
                 user=user
             )
-            form = EditProductForm(fornecedor,categoria)
+            product = models.Produto.objects.get(
+                pk=id,
+                nome=produto
+            )
+            form = EditProductForm(fornecedor,categoria,initial={'categoria':product.categoria.pk,
+                                                                 'fornecedor':product.fornecedor.pk,
+                                                                 'nome':product.nome,
+                                                                 'quantidade':product.quantidade,
+                                                                 'preco_custo':product.preco_custo,
+                                                                 'preco_venda':product.preco_venda})
             return render(request,'seu_estoque_pessoal/editar-produto.html',{
                 "form":form
             })
