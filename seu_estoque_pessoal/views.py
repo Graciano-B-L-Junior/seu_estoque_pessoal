@@ -5,6 +5,7 @@ from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,\
     RecuperarContaForm,CadastroForm,EditProductForm
 from . import models
 from django.contrib import messages
+from django.core.paginator import Paginator
 # Create your views here.
 
 def Login(request):
@@ -89,23 +90,28 @@ def EstoqueGeral(request):
     if request.session.get("user_id")!=None:
         produtos = models.Produto.objects.filter(
             user=models.User.objects.get(pk=request.session.get("user_id"))
-        )
-        sem_produtos = True if len(produtos) == 0 else False
+        ).order_by('id')
+        paginator = Paginator(produtos,1)
+        sem_produtos = True if len(paginator.object_list) == 0 else False
         infos_totais = {}
+        page = paginator.page(1)
+        print(page.count)
         if sem_produtos == False:
-            quantidade = len(produtos)
+            quantidade = len(paginator.object_list)
             custo_total =0
             lucro_bruto =0
-            for produto in produtos:
+            for produto in paginator.object_list:
                 custo_total += produto.quantidade * produto.preco_custo
                 lucro_bruto += produto.quantidade * produto.preco_venda
             infos_totais["quantidade"]=quantidade
             infos_totais["custo_total"] = custo_total
             infos_totais["lucro_bruto"] = lucro_bruto
         return render(request,'seu_estoque_pessoal/estoque-geral.html',{
-            "produtos":produtos,
+            "produtos":page,
             "sem_produtos":sem_produtos,
-            "infos_totais":infos_totais
+            "infos_totais":infos_totais,
+            "pagina_total":len(page.object_list),
+            "total_produtos":paginator.count
         })
     else:
         return redirect(Login)
@@ -410,15 +416,6 @@ def EditarProduto(request,id,produto):
                 product.preco_custo=preco_custo
                 product.preco_venda=preco_venda
                 product.quantidade=quantidade
-                # produto = models.Produto(
-                #     nome=nome_produto,
-                #     quantidade=quantidade,
-                #     preco_custo=preco_custo,
-                #     preco_venda=preco_venda,
-                #     user=usuario,
-                #     fornecedor=fornecedor,
-                #     categoria=categoria,
-                # )
                 product.save()
                 messages.success(request,"Produto Editado com sucesso")
                 return render(request,'seu_estoque_pessoal/editar-produto.html',{

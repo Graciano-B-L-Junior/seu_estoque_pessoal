@@ -36,7 +36,7 @@
 </div>
 {%if produtos%}
 <div class="total-info">
-    <h3>Informações totais do fornecedor: </h3>
+    <h3>Informações totais do estoque: </h3>
     <p class="g-1-1">Quantidade total de produtos</p>
     <p class="g-1-2">Total em R$ de custo em estoque</p>
     <p class="g-1-3">Total em R$ de lucro bruto</p>
@@ -92,7 +92,7 @@
 {%endfor%}
 </div>
     <div class="pagination-list">
-        <p>mostrando X de Y produtos</p>
+        <p>mostrando {{pagina_total}} de {{total_produtos}} produtos</p>
         <a class="previous-page" href="">
             <span class="material-icons">
                 arrow_back_ios
