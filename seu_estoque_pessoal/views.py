@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.urls import reverse
 from .forms import ProductForm,SearchProductByCategory,SearchProductBySupplier,\
     AddSupplier,AddCategory,LoginForm,\
     RecuperarContaForm,CadastroForm,EditProductForm
@@ -94,9 +94,18 @@ def EstoqueGeral(request):
         paginator = Paginator(produtos,1)
         sem_produtos = True if len(paginator.object_list) == 0 else False
         infos_totais = {}
-        page = paginator.page(1)
-        print(page.count)
+        pagina_atual = 1
+        if request.GET.get("pagina") !=None:
+            pagina_atual = request.GET.get("pagina")
+        page = paginator.page(pagina_atual)
+        proxima_pagina = None
+        pagina_anterior = None
+
         if sem_produtos == False:
+            if page.has_next():
+                proxima_pagina=page.next_page_number()
+            if page.has_previous():
+                pagina_anterior = page.previous_page_number()
             quantidade = len(paginator.object_list)
             custo_total =0
             lucro_bruto =0
@@ -111,7 +120,11 @@ def EstoqueGeral(request):
             "sem_produtos":sem_produtos,
             "infos_totais":infos_totais,
             "pagina_total":len(page.object_list),
-            "total_produtos":paginator.count
+            "total_produtos":paginator.count,
+            "anterior":page.has_previous(),
+            "proximo":page.has_next(),
+            "proxima_pagina":proxima_pagina,
+            "pagina_anterior":pagina_anterior
         })
     else:
         return redirect(Login)
@@ -200,38 +213,15 @@ def EstoqueCategoria(request):
                 "form":form,
             })
         elif request.method == "POST":
-            # categorias = models.Categoria.objects.filter(
-            #     user=models.User.objects.get(pk=request.session.get("user_id"))
-            # )
             categorias = models.Categoria.objects.filter(
                 user=models.User.objects.get(pk=request.session.get("user_id"))
             )
             form = SearchProductByCategory(categorias,request.POST)
-            # IMPLEMENTAR SISTEMA DE QUERY DE PRODUTOS
             if form.is_valid():
                 categoria = form.cleaned_data["categoria_nome"]
-                categoria = models.Categoria.objects.get(nome=categoria,
-                                                         user=models.User.objects.get(pk=request.session.get("user_id")))
-                produtos = models.Produto.objects.filter(categoria=categoria,
-                                                         user=models.User.objects.get(pk=request.session.get("user_id")))
-                sem_produtos = True if len(produtos) == 0 else False
-                infos_totais = {}
-                if sem_produtos == False:
-                    quantidade = len(produtos)
-                    custo_total =0
-                    lucro_bruto =0
-                    for produto in produtos:
-                        custo_total += produto.quantidade * produto.preco_custo
-                        lucro_bruto += produto.quantidade * produto.preco_venda
-                    infos_totais["quantidade"]=quantidade
-                    infos_totais["custo_total"] = custo_total
-                    infos_totais["lucro_bruto"] = lucro_bruto
-                return render(request,'seu_estoque_pessoal/estoque-categoria.html',{
-                "produtos":produtos,
-                "form":form,
-                "sem_produtos":sem_produtos,
-                "infos_totais":infos_totais
-            })
+                
+                
+                return redirect(reverse('category_product_list',args=[categoria]))
             else:
                 messages.error(request, "Erro ao utilizar formulário, tente novamente")
                 return render(request,'seu_estoque_pessoal/estoque-categoria.html',{
@@ -262,28 +252,7 @@ def EstoqueFornecedor(request):
             # IMPLEMENTAR SISTEMA DE QUERY DE PRODUTOS
             if form.is_valid():
                 fornecedor = form.cleaned_data["fornecedor"]
-                fornecedor = models.Fornecedor.objects.get(nome=fornecedor,
-                                                         user=models.User.objects.get(pk=request.session.get("user_id")))
-                produtos = models.Produto.objects.filter(fornecedor=fornecedor,
-                                                         user=models.User.objects.get(pk=request.session.get("user_id")))
-                sem_produtos = True if len(produtos) == 0 else False
-                infos_totais = {}
-                if sem_produtos == False:
-                    quantidade = len(produtos)
-                    custo_total =0
-                    lucro_bruto =0
-                    for produto in produtos:
-                        custo_total += produto.quantidade * produto.preco_custo
-                        lucro_bruto += produto.quantidade * produto.preco_venda
-                    infos_totais["quantidade"]=quantidade
-                    infos_totais["custo_total"] = custo_total
-                    infos_totais["lucro_bruto"] = lucro_bruto
-                return render(request,'seu_estoque_pessoal/estoque-fornecedor.html',{
-                "form":form,
-                "produtos":produtos,
-                "sem_produtos":sem_produtos,
-                "infos_totais":infos_totais
-            })
+                return redirect(reverse('supplier_product_list',args=[fornecedor]))
             else:
                 messages.error(request, "Erro ao utilizar formulário, tente novamente")
                 return render(request,'seu_estoque_pessoal/estoque-fornecedor.html',{
@@ -426,5 +395,99 @@ def EditarProduto(request,id,produto):
                 return render(request,'seu_estoque_pessoal/editar-produto.html',{
                 "form":form
             })
+    else:
+        return redirect(Login)
+    
+def ListarEstoqueCategoria(request,nome_categoria):
+    if request.session.get("user_id")!=None:
+        categoria = models.Categoria.objects.get(nome=nome_categoria,
+                                                            user=models.User.objects.get(pk=request.session.get("user_id")))
+        produtos = models.Produto.objects.filter(categoria=categoria,
+                                                user=models.User.objects.get(pk=request.session.get("user_id")))\
+                                                .order_by('id')
+        sem_produtos = True if len(produtos) == 0 else False
+        infos_totais = {}
+        pagina_atual = 1
+        paginator = Paginator(produtos,1)
+        
+        pagina_atual = request.GET.get("pagina") if request.GET.get("pagina") != None else 1
+        page = paginator.page(pagina_atual)
+        proxima_pagina = None
+        pagina_anterior = None
+        anterior = page.has_previous()
+        proximo = page.has_next()
+        if sem_produtos == False:
+            if proximo:
+                proxima_pagina=page.next_page_number()
+            if anterior:
+                pagina_anterior=page.previous_page_number()
+            quantidade = len(produtos)
+            custo_total =0
+            lucro_bruto =0
+            for produto in produtos:
+                custo_total += produto.quantidade * produto.preco_custo
+                lucro_bruto += produto.quantidade * produto.preco_venda
+            infos_totais["quantidade"]=quantidade
+            infos_totais["custo_total"] = custo_total
+            infos_totais["lucro_bruto"] = lucro_bruto
+        return render(request,'seu_estoque_pessoal/lista-produtos-categoria.html',{
+            "nome_categoria":nome_categoria,
+            "produtos":page,
+            "sem_produtos":sem_produtos,
+            "infos_totais":infos_totais,
+            "pagina_total":len(page.object_list),
+            "total_produtos":paginator.count,
+            "anterior":page.has_previous(),
+            "proximo":page.has_next(),
+            "proxima_pagina":proxima_pagina,
+            "pagina_anterior":pagina_anterior
+        })
+    else:
+        return redirect(Login)
+    
+def ListarEstoqueFornecedor(request,nome_fornecedor):
+    if request.session.get("user_id")!=None:
+        fornecedor = models.Fornecedor.objects.get(nome=nome_fornecedor,
+                                                            user=models.User.objects.get(pk=request.session.get("user_id")))
+        produtos = models.Produto.objects.filter(fornecedor=fornecedor,
+                                                user=models.User.objects.get(pk=request.session.get("user_id")))\
+                                                .order_by('id')
+        sem_produtos = True if len(produtos) == 0 else False
+        infos_totais = {}
+        pagina_atual = 1
+        paginator = Paginator(produtos,1)
+        
+        pagina_atual = request.GET.get("pagina") if request.GET.get("pagina") != None else 1
+        page = paginator.page(pagina_atual)
+        proxima_pagina = None
+        pagina_anterior = None
+        anterior = page.has_previous()
+        proximo = page.has_next()
+        if sem_produtos == False:
+            if proximo:
+                proxima_pagina=page.next_page_number()
+            if anterior:
+                pagina_anterior=page.previous_page_number()
+            quantidade = len(produtos)
+            custo_total =0
+            lucro_bruto =0
+            for produto in produtos:
+                custo_total += produto.quantidade * produto.preco_custo
+                lucro_bruto += produto.quantidade * produto.preco_venda
+            infos_totais["quantidade"]=quantidade
+            infos_totais["custo_total"] = custo_total
+            infos_totais["lucro_bruto"] = lucro_bruto
+        return render(request,'seu_estoque_pessoal/lista-produtos-fornecedor.html',{
+            "nome_fornecedor":nome_fornecedor,
+            "produtos":page,
+            "sem_produtos":sem_produtos,
+            "infos_totais":infos_totais,
+            "pagina_total":len(page.object_list),
+            "total_produtos":paginator.count,
+            "anterior":page.has_previous(),
+            "proximo":page.has_next(),
+            "proxima_pagina":proxima_pagina,
+            "pagina_anterior":pagina_anterior
+        })
     else:
         return redirect(Login)

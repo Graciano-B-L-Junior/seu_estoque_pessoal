@@ -90,19 +90,32 @@
     </div>
 {%endfor%}
 </div>
-    <div class="pagination-list">
-        <p>mostrando X de Y produtos</p>
-        <a class="previous-page" href="">
-            <span class="material-icons">
-                arrow_back_ios
-            </span>
-        </a>
-        <a class="next-page" href="">
-            <span class="material-icons">
-                arrow_forward_ios
-            </span>
-        </a>
-    </div>
+    <form id="pagination_form" method="post">
+        {% csrf_token %}
+        <div class="pagination-list">
+            <p>mostrando {{pagina_total}} de {{total_produtos}} produtos</p>
+            <!-- <a class="previous-page" href="">
+                <span class="material-icons">
+                    arrow_back_ios
+                </span>
+            </a> -->
+            <button name="anterior" value="{{pagina_anterior}}">
+                <span class="material-icons">
+                    arrow_back_ios
+                </span>
+            </button>
+            <button name="proximo" value="{{proxima_pagina}}">
+                <span class="material-icons">
+                    arrow_forward_ios
+                </span>
+            </button>
+            <!-- <a class="next-page" href="">
+                <span class="material-icons">
+                    arrow_forward_ios
+                </span>
+            </a> -->
+        </div>
+    </form>
 {%endif%}
 {%if sem_produtos%}
 <div class="alert-message">
