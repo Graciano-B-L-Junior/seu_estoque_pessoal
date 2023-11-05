@@ -1,7 +1,7 @@
-version: '3.8'
+version: '3.7'
 services:
   aplication:
-    image: ubuntu:django
+    image: python:django
     build: .
     container_name: django-app
     volumes:
