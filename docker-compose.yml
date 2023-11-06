@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 services:
   aplication:
     image: python:django
@@ -9,18 +9,25 @@ services:
     ports:
       - 8000:8000
     command: python3 manage.py runserver 0.0.0.0:8000
+    environment:
+      - DB_HOST=db
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASS=postgres1
     depends_on:
       - db
   db:
     image: postgres:16
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - postgres_volume:/var/lib/postgresql/data
     ports:
       - 5432:5432
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=postgres1
     container_name: postgres_db
+volumes:
+  postgres_volume:
 
 
